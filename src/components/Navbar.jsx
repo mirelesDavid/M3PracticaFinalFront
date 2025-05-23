@@ -16,18 +16,16 @@ const Navbar = () => {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          M3 Practica Final
+          Sistema de Usuarios
         </Typography>
         <Box>
           {token ? (
-            <>
-              <Button color="inherit" onClick={handleLogout}>
-                Logout
-              </Button>
-            </>
+            <Button color="inherit" onClick={handleLogout}>
+              Cerrar Sesion
+            </Button>
           ) : (
             <Button color="inherit" onClick={() => navigate('/login')}>
-              Login
+              Iniciar Sesion
             </Button>
           )}
         </Box>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Container,
   Typography,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -39,7 +38,7 @@ const Home = () => {
       const data = await userService.getAll();
       setUsers(data);
     } catch (error) {
-      setError('Error fetching users');
+      setError('Error obteniendo usuarios');
       console.error('Error fetching users:', error);
     }
   };
@@ -54,7 +53,7 @@ const Home = () => {
       setFormData({
         username: user.username,
         email: user.email,
-        password: '', // No mostramos la contraseña actual
+        password: '',
       });
     } else {
       setEditingUser(null);
@@ -93,29 +92,27 @@ const Home = () => {
 
     try {
       if (editingUser) {
-        // Update
         await userService.update(editingUser.id, formData);
-        setSuccess('User updated successfully');
+        setSuccess('Usuario actualizado');
       } else {
-        // Create
         await userService.create(formData);
-        setSuccess('User created successfully');
+        setSuccess('Usuario creado');
       }
       handleCloseDialog();
       fetchUsers();
     } catch (error) {
-      setError(error.response?.data?.message || 'An error occurred');
+      setError(error.response?.data?.message || 'Error');
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+    if (window.confirm('Seguro que quiere eliminar?')) {
       try {
         await userService.delete(id);
-        setSuccess('User deleted successfully');
+        setSuccess('Usuario eliminado');
         fetchUsers();
       } catch (error) {
-        setError('Error deleting user');
+        setError('Error eliminando usuario');
       }
     }
   };
@@ -125,10 +122,10 @@ const Home = () => {
       <Box sx={{ mt: 4 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h4" component="h1">
-            User Management
+            Lista de Usuarios
           </Typography>
-          <Button variant="contained" color="primary" onClick={() => handleOpenDialog()}>
-            Add New User
+          <Button variant="contained" onClick={() => handleOpenDialog()}>
+            Nuevo Usuario
           </Button>
         </Box>
 
@@ -143,53 +140,84 @@ const Home = () => {
           </Alert>
         )}
 
-        <Paper elevation={3}>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>Username</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Actions</TableCell>
+        <TableContainer 
+          sx={{ 
+            border: '2px solid #ccc',
+            backgroundColor: '#fff'
+          }}
+        >
+          <Table 
+            sx={{
+              '& .MuiTableCell-root': {
+                border: '1px solid #ddd',
+                padding: '8px',
+                backgroundColor: '#f9f9f9'
+              }
+            }}
+          >
+            <TableHead>
+              <TableRow sx={{ backgroundColor: '#e0e0e0' }}>
+                <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#d0d0d0 !important' }}>ID</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#d0d0d0 !important' }}>Usuario</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#d0d0d0 !important' }}>Email</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#d0d0d0 !important' }}>Acciones</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users.map((user, index) => (
+                <TableRow 
+                  key={user.id}
+                  sx={{
+                    backgroundColor: index % 2 === 0 ? '#ffffff' : '#f5f5f5',
+                    '&:hover': {
+                      backgroundColor: '#eeeeee'
+                    }
+                  }}
+                >
+                  <TableCell sx={{ border: '1px solid #ddd' }}>{user.id}</TableCell>
+                  <TableCell sx={{ border: '1px solid #ddd' }}>{user.username}</TableCell>
+                  <TableCell sx={{ border: '1px solid #ddd' }}>{user.email}</TableCell>
+                  <TableCell sx={{ border: '1px solid #ddd' }}>
+                    <Button
+                      size="small"
+                      onClick={() => handleOpenDialog(user)}
+                      sx={{ 
+                        mr: 1,
+                        backgroundColor: '#e0e0e0',
+                        color: '#000',
+                        '&:hover': { backgroundColor: '#d0d0d0' }
+                      }}
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      size="small"
+                      onClick={() => handleDelete(user.id)}
+                      sx={{ 
+                        backgroundColor: '#ffcccb',
+                        color: '#000',
+                        '&:hover': { backgroundColor: '#ffaaaa' }
+                      }}
+                    >
+                      Eliminar
+                    </Button>
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {users.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell>{user.id}</TableCell>
-                    <TableCell>{user.username}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>
-                      <Button
-                        color="primary"
-                        onClick={() => handleOpenDialog(user)}
-                        sx={{ mr: 1 }}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        color="error"
-                        onClick={() => handleDelete(user.id)}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>{editingUser ? 'Edit User' : 'Add New User'}</DialogTitle>
+        <DialogTitle>
+          {editingUser ? 'Editar Usuario' : 'Nuevo Usuario'}
+        </DialogTitle>
         <form onSubmit={handleSubmit}>
           <DialogContent>
             <TextField
               fullWidth
-              label="Username"
+              label="Usuario"
               name="username"
               value={formData.username}
               onChange={handleInputChange}
@@ -215,13 +243,13 @@ const Home = () => {
               onChange={handleInputChange}
               margin="normal"
               required={!editingUser}
-              helperText={editingUser ? "Leave blank to keep current password" : ""}
+              helperText={editingUser ? "Dejar vacio para mantener" : ""}
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button type="submit" variant="contained" color="primary">
-              {editingUser ? 'Update' : 'Create'}
+            <Button onClick={handleCloseDialog}>Cancelar</Button>
+            <Button type="submit" variant="contained">
+              {editingUser ? 'Actualizar' : 'Crear'}
             </Button>
           </DialogActions>
         </form>

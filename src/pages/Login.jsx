@@ -19,7 +19,6 @@ const Login = () => {
   const { login, token } = useAuth();
 
   useEffect(() => {
-    // Si hay token, redirigir a home
     if (token) {
       navigate('/home');
     }
@@ -30,7 +29,7 @@ const Login = () => {
     setError('');
 
     if (!email || !password) {
-      setError('Please fill in all fields');
+      setError('Llene todos los campos');
       return;
     }
 
@@ -38,16 +37,16 @@ const Login = () => {
     if (success) {
       navigate('/home');
     } else {
-      setError('Invalid email or password');
+      setError('Email o password incorrecto');
     }
   };
 
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 8 }}>
-        <Paper elevation={3} sx={{ p: 4 }}>
+        <Paper sx={{ p: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom align="center">
-            Login
+            Iniciar Sesion
           </Typography>
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
@@ -77,10 +76,9 @@ const Login = () => {
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
               sx={{ mt: 3 }}
             >
-              Login
+              Entrar
             </Button>
           </form>
         </Paper>
