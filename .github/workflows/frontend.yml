@@ -34,7 +34,7 @@ jobs:
         continue-on-error: true
 
       - name: Run unit tests
-        run: npm test -- --passWithNoTests
+        run: npm test
 
       - name: Build Vite project
         run: npm run build

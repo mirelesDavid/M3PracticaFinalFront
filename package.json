@@ -21,6 +21,13 @@
     ],
     "transform": {
       "^.+\\.(js|jsx)$": "babel-jest"
+    },
+    "extensionsToTreatAsEsm": [".jsx"],
+    "globals": {
+      "NODE_ENV": "test"
+    },
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
     }
   },
   "dependencies": {
